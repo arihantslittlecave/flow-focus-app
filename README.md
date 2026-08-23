@@ -1,6 +1,6 @@
 # Flow
 
-![Flow, a focus app. Plan the day, run the timer, reflect on it.](portfolio/case/01-hero.png)
+![Flow, a focus app. Plan the day, run the timer, reflect on it.](hero.png)
 
 A focus app that runs in the browser. Plan the day, run the timer, reflect on how
 it went.
@@ -19,7 +19,7 @@ A personal design project, and a portfolio piece rather than a product.
 
 Two iterations. The first went up in January 2026 as a set of designs. This one,
 in August 2026, is the same idea built as working software. The 13 slide case
-study comparing them is in `portfolio/case/`.
+study comparing them is on Behance.
 
 It is plain HTML, CSS and JavaScript. No framework, no dependencies, and once the
 page has loaded it makes no network requests at all. The whole app is one file.

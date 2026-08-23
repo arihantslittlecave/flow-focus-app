@@ -36,3 +36,11 @@ archive/styles-neumorphic.css
 # Parked until the demo video exists.
 portfolio/for-the-demo/
 banner/ORANGE-B-header.png
+
+# Mine, not the showcase. The repo is the app and the link, nothing else.
+banner/
+portfolio/
+thumbs/
+tools/
+archive/
+logo.png

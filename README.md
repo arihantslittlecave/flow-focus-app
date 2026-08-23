@@ -28,7 +28,13 @@ Every screen and control is covered by an automated suite of 215 checks driven b
 real mouse events, plus a second suite that drives the app with real touch events
 at four phone and tablet sizes, in both themes.
 
-A native version may follow if the idea earns it.
+## What is next
+
+An app.
+
+This browser version is here to find out whether the idea holds up when you
+actually live with it for a while, which is the part a set of screens can never
+tell you. If it does, the next one is a real app: installed, not opened in a tab.
 
 ## Licence
 

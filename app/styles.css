@@ -218,10 +218,12 @@ body.no-rail .rail-show{display:grid}
    treatment as something switched off. It is the one control on the rail
    anyone actually goes looking for, so it is orange and it holds a fill. */
 .rail-reset{margin-top:auto;padding:10px;border-radius:var(--radius-sm);
-  font-size:12px;font-weight:500;
-  border:1px solid rgba(255,102,0,.45);color:#FF9B57;
-  background:rgba(255,102,0,.12);transition:.14s}
-.rail-reset:hover{border-color:rgba(255,102,0,.8);background:rgba(255,102,0,.22);color:#FFB07A}
+  font-size:12px;font-weight:600;
+  border:0;background:#C74A00;color:#fff;transition:.14s}
+/* #C74A00, not the brighter mark orange: white sits at 4.76:1 on this one and
+   nowhere near it on #FF6600. Filled, it is also the only solid block on the
+   rail, so it no longer reads as a sibling of the active nav pill. */
+.rail-reset:hover{filter:brightness(1.08)}
 
 /* `clip` not `hidden`: the dot field inside is deliberately oversized, and
    `hidden` would make this a scroll container that any .focus() could scroll. */

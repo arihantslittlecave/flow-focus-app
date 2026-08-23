@@ -214,9 +214,14 @@ body.no-rail .rail-show{display:grid}
 .rail-nav button:hover{background:rgba(255,255,255,.07);color:#fff}
 .rail-nav button.is-active{background:rgba(255,102,0,.16);color:#FF9B57}
 .rail-nav .rail-cat{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#6C6C75;padding:12px 10px 3px}
-.rail-reset{margin-top:auto;padding:9px;border-radius:var(--radius-sm);font-size:12px;
-  border:1px solid rgba(255,255,255,.12);color:#B4B4BC;transition:.14s}
-.rail-reset:hover{border-color:#FF8A76;color:#FF8A76}
+/* This was grey text on a 12% white border, on a dark rail, which is the same
+   treatment as something switched off. It is the one control on the rail
+   anyone actually goes looking for, so it is orange and it holds a fill. */
+.rail-reset{margin-top:auto;padding:10px;border-radius:var(--radius-sm);
+  font-size:12px;font-weight:500;
+  border:1px solid rgba(255,102,0,.45);color:#FF9B57;
+  background:rgba(255,102,0,.12);transition:.14s}
+.rail-reset:hover{border-color:rgba(255,102,0,.8);background:rgba(255,102,0,.22);color:#FFB07A}
 
 /* `clip` not `hidden`: the dot field inside is deliberately oversized, and
    `hidden` would make this a scroll container that any .focus() could scroll. */

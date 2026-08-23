@@ -5,7 +5,7 @@
 A focus app that runs in the browser. Plan the day, run the timer, reflect on how
 it went.
 
-### [Open the live demo](https://arihantslittlecave.github.io/flow-focus-app/)
+### [Open the live demo](https://arihantslittlecave.github.io/flow-focus-app/#onboard)
 
 That link is the project. It opens on a phone or a laptop, needs nothing
 installed, and works straight away.

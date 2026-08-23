@@ -77,10 +77,15 @@
   --secondary-fg:#EDEFF5;
   --accent-2:#4C7DFF;
   /* There is no red. The palette is five colours and a sixth one for danger
-     was never among them, so a destructive action wears the accent like any
-     other committed action and the warning lives in the words. */
-  --destructive:var(--muted-fg);   /* ink */
-  --destructive-fill:var(--primary);
+     was never among them, so a destructive action wears the brighter orange,
+     the one the mark carries. It is still the accent, so it still reads as
+     the committed action, but it is not the same orange as Start Flow and
+     Add it, so it does not wear their clothes.
+     The text goes dark for a reason: white on FF7A2B is 2.6:1 and unusable.
+     2B1405 on it is 6.7:1, and it is the pairing off the palette strip. */
+  --destructive:var(--muted-fg);      /* ink */
+  --destructive-fill:#FF7A2B;
+  --destructive-fill-fg:#2B1405;
   --success:#4FB783;
 
   /* Light tint plus a backdrop blur, so the app reads as pushed back rather
@@ -117,7 +122,8 @@
   --input:#E7EAF0;
   --primary-ink:#B04200;
   --destructive:var(--muted-fg);
-  --destructive-fill:var(--primary);
+  --destructive-fill:#FF7A2B;
+  --destructive-fill-fg:#2B1405;
   --scrim:rgba(46,52,68,.26);
   --sheet-edge:rgba(255,255,255,.7);
   --secondary:#E7EAF0;
@@ -860,7 +866,7 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
 .dlg p{margin:0;font-size:13px;line-height:1.6;color:var(--muted-fg)}
 .dlg-actions{display:flex;gap:8px;margin-top:8px}
 .dlg-actions .btn{flex:1}
-.btn--danger{background:var(--destructive-fill);color:#fff}
+.btn--danger{background:var(--destructive-fill);color:var(--destructive-fill-fg)}
 .btn--danger:hover{filter:brightness(1.10)}
 
 /* ============ TOAST ============ */

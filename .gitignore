@@ -1,12 +1,3 @@
-# Working files. The repo is the app and the link, nothing else.
-app/_*
-archive/
-banner/
-logo.png
-portfolio/
-thumbs/
-tools/
-
 # Editors
 .vscode/
 .idea/

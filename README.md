@@ -7,55 +7,33 @@ it went.
 
 ### [Open the live demo](https://arihantslittlecave.github.io/flow-focus-app/)
 
+That link is the project. It opens on a phone or a laptop, needs nothing
+installed, and works straight away.
+
 No sign up, no account, no server. Everything stays in your own browser, in
-`localStorage` under `flow.v2`, and exports as readable JSON whenever you want it.
+`localStorage`, and exports as readable JSON whenever you want it.
 
-A personal design project, not a product for sale. Two iterations: the first went
-up in January 2026 as a set of designs, this one in August 2026 as working
-software. The case study comparing them is in `portfolio/case/`.
+## About
 
-Plain HTML, CSS and JavaScript. No framework, no dependencies, no build step, and
-once the page has loaded it makes no network requests at all. The one typeface it
-uses is in the repo.
+A personal design project, and a portfolio piece rather than a product.
 
-## Run it
+Two iterations. The first went up in January 2026 as a set of designs. This one,
+in August 2026, is the same idea built as working software. The 13 slide case
+study comparing them is in `portfolio/case/`.
 
-Open `app/index.html`. That is it.
+It is plain HTML, CSS and JavaScript. No framework, no dependencies, and once the
+page has loaded it makes no network requests at all. The whole app is one file.
 
-`index.html` at the root is the same app built into one file by
-`tools/build_app.py`, with the stylesheet, script, fonts and icons inlined. That
-is what the live demo serves. Edit `app/`, never that file, and rerun the build.
+Every screen and control is covered by an automated suite of 215 checks driven by
+real mouse events, plus a second suite that drives the app with real touch events
+at four phone and tablet sizes, in both themes.
 
-Dictation on the Reflect screen needs a served page, so for that:
-
-```bash
-python tools/serve.py
-```
-
-## Tests
-
-```bash
-python tools/e2e.py
-```
-
-215 checks with real mouse events: every screen, every control, both themes,
-colour contrast.
-
-```bash
-python tools/mobile_check.py
-```
-
-The same app driven the way a phone drives it, at four viewport sizes with real
-touch events.
-
-Both take a URL, so they can run against the built file or the live site instead
-of the source:
-
-```bash
-FLOW_URL=https://arihantslittlecave.github.io/flow-focus-app/ python tools/e2e.py
-```
+A native version may follow if the idea earns it.
 
 ## Licence
 
-All rights reserved. The code is here to be read, not reused. If you want to use
-part of it, ask me first.
+Copyright Arihant. All rights reserved.
+
+The source is here to be looked at, not taken. No permission is given to copy,
+reuse, modify or redistribute any part of it, in whole or in part, including as
+training data. If you want to use something, ask me first.

@@ -1,0 +1,21 @@
+# Store text with LF and let each machine check it out however it likes, so a
+# clone on another OS is not a diff full of line endings.
+* text=auto eol=lf
+
+# Never run line-ending conversion over these. A single byte changed in a font
+# or an image is a corrupt file, not a whitespace change.
+*.png   binary
+*.jpg   binary
+*.woff2 binary
+*.mp4   binary
+
+# What GitHub counts as the project's languages, and what it folds away in a
+# diff. Without these the bar reads "HTML 89.7%", which is one 2.9 MB archived
+# page and one generated build file, and says nothing true about the app.
+# leading slash matters: a bare index.html would match at any depth and
+# take app/index.html, the source, with it
+/index.html   linguist-generated=true
+archive/**    linguist-vendored=true
+portfolio/**  linguist-documentation=true
+banner/**     linguist-documentation=true
+thumbs/**     linguist-documentation=true

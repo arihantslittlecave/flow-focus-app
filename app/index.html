@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Flow</title>
+<meta name="description" content="A focus app that runs in the browser. Plan the day, run the timer, reflect on how it went. No sign up, no account, nothing leaves your device.">
+
+<!-- The mark is white on transparent, drawn for a dark ground, so on its own it
+     disappears in a light browser tab. tools/build_icons.py sits it on the
+     app's own near-black first. 180 is the size iOS wants for a home screen. -->
+<link rel="icon" href="icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-title" content="Flow">
+
+<!-- The card people see when the link gets posted. The path is relative to the
+     site root, which is where the built index.html lives, not to app/.
+     tools/set_site_url.py rewrites these to absolute once the site has a URL,
+     because a few scrapers will not resolve a relative one. -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://arihantslittlecave.github.io/flow-focus-app/">
+<meta property="og:title" content="Flow">
+<meta property="og:description" content="Plan the day. Do the work. Reflect on it. A focus app with no sign up and no account.">
+<meta property="og:image" content="https://arihantslittlecave.github.io/flow-focus-app/banner/FLOW-banner-1600x900.png">
+<meta property="og:image:width" content="1600">
+<meta property="og:image:height" content="900">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ ICON SPRITE ============ -->
+<!-- Inline styles are deliberate: the global `svg{width:100%;height:100%}` rule
+     outranks the width/height attributes, which turned this sprite into a
+     full-viewport invisible overlay that swallowed every click on the rail. -->
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden;pointer-events:none">
+<defs>
+  <symbol id="i-chev-r" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-chev-l" viewBox="0 0 24 24"><path d="M15 5 8 12l7 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-tri-r" viewBox="0 0 24 24"><path d="M9 6l7 6-7 6z" fill="currentColor"/></symbol>
+  <symbol id="i-tri-l" viewBox="0 0 24 24"><path d="M15 6l-7 6 7 6z" fill="currentColor"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check-c" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.8"/><path d="m8 12.2 2.8 2.8L16.2 9.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-skip" viewBox="0 0 24 24"><path d="M6 5.6v12.8L15 12z" fill="currentColor"/><rect x="16.6" y="5.6" width="2.4" height="12.8" rx="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></symbol>
+  <symbol id="i-play-o" viewBox="0 0 24 24"><path d="M8 5.6v12.8L18.5 12z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="7" y="5.5" width="3.4" height="13" rx="1.2" fill="currentColor"/><rect x="13.6" y="5.5" width="3.4" height="13" rx="1.2" fill="currentColor"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 4.2v3.6h3.6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 6.5h15M9.5 6.5V5a1.5 1.5 0 0 1 1.5-1.5h2A1.5 1.5 0 0 1 14.5 5v1.5M6.5 6.5l.8 12a2 2 0 0 0 2 1.9h5.4a2 2 0 0 0 2-1.9l.8-12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 2.5s5.6 4.2 5.6 9.6a5.6 5.6 0 0 1-11.2 0c0-1.7.7-3 1.6-4 .3 1.3 1.1 2 1.9 2 0-3.1 2.1-5.8 2.1-7.6Z" fill="currentColor"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2.6" width="6" height="11" rx="3" stroke="currentColor" stroke-width="2"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-avatar" viewBox="0 0 24 24"><circle cx="12" cy="9" r="3.9" fill="currentColor"/><path d="M4.6 21a7.4 7.4 0 0 1 14.8 0Z" fill="currentColor"/></symbol>
+  <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.5" fill="currentColor"/><circle cx="15" cy="6" r="1.5" fill="currentColor"/><circle cx="9" cy="12" r="1.5" fill="currentColor"/><circle cx="15" cy="12" r="1.5" fill="currentColor"/><circle cx="9" cy="18" r="1.5" fill="currentColor"/><circle cx="15" cy="18" r="1.5" fill="currentColor"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3.5v11m0 0 4-4m-4 4-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.5 17v1.5a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-volume" viewBox="0 0 24 24"><path d="M4 9.5h3l4.5-3.8v12.6L7 14.5H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-plan" viewBox="0 0 24 24"><path d="M8 6h11M8 12h11M8 18h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m3 6 1.4 1.4L7 4.8M3 12l1.4 1.4L7 10.8M3 18l1.4 1.4L7 16.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.5A8.2 8.2 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2.8" y="5" width="18.4" height="14" rx="2.6" stroke="currentColor" stroke-width="1.8"/><path d="m3.6 7.2 7.3 5.2a2 2 0 0 0 2.2 0l7.3-5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-logo" viewBox="-0.66 0.66 101.32 98.68">
+    <path fill="currentColor" fill-rule="evenodd" d="M49.75 0.66L58.06 1.25L62.13 2.08L68.11 4.07L73.26 6.48L76.99 8.72L80.9 11.54L85.13 15.28L91.2 22.34L94.6 27.66L96.76 32.06L98.59 36.96L99.67 41.11L100.5 46.68L100.66 50.5L99.83 59.39L98.59 64.29L96.93 68.69L94.77 73.01L91.86 77.57L88.87 81.31L84.97 85.38L81.15 88.62L76.99 91.53L69.1 95.6L64.7 97.18L60.05 98.34L51.16 99.34L46.93 99.25L42.03 98.67L37.54 97.76L32.64 96.26L24.58 92.52L19.27 89.04L16.28 86.63L12.96 83.47L9.39 79.4L6.48 75.33L4.32 71.59L2.49 67.61L0.83 62.62L-0.17 57.97L-0.66 53.07L-0.66 48.92L-0.17 43.77L0.91 38.54L2.49 33.72L3.9 30.4L6.73 25.25L9.63 21.1L12.87 17.36L17.28 13.21L21.35 10.13L30.15 5.15L39.29 1.99L44.27 1.08L49.75 0.66ZM49.58 6.23L53.99 6.31L59.8 7.14L65.28 8.72L69.1 10.3L73.84 12.87L79.32 16.86L83.8 21.18L86.71 24.75L89.78 29.49L92.11 34.22L93.6 38.46L94.85 43.77L95.35 48.42L95.27 54.4L94.35 60.22L93.02 64.45L75.17 51.66L64.87 59.39L38.04 37.87L6.31 62.13L5.4 58.31L4.9 53.74L4.98 47.59L5.73 42.52L7.56 36.05L9.22 32.14L11.79 27.49L14.53 23.67L16.78 21.1L21.68 16.53L25.08 14.04L30.32 11.05L34.55 9.22L38.95 7.81L44.19 6.73L49.58 6.23Z"/>
+    <circle cx="68.1" cy="33.7" r="10.8" fill="#FF6600"/>
+  </symbol>
+</defs>
+</svg>
+
+<div class="stage">
+
+  <!-- Hides the navigation so the phone gets the whole window. This rail is a
+       tool for driving the demo, not part of what is being demoed, and it has
+       no business being in the recording. -->
+  <button class="rail-show" id="railShow" aria-label="Show the screen list" title="Show the screen list (S)">
+    <svg><use href="#i-plan"/></svg>
+  </button>
+
+  <aside class="stage-rail">
+    <button class="rail-hide" id="railHide" aria-label="Hide the screen list" title="Hide the screen list (S)">
+      <svg><use href="#i-close"/></svg>
+    </button>
+    <div class="rail-brand">
+      <svg class="rail-mark"><use href="#i-logo"/></svg>
+      <div><div class="rail-name">FLOW</div><div class="rail-sub">working prototype</div></div>
+    </div>
+    <p class="rail-note">Everything saves to this browser. Jump to any screen below.</p>
+    <nav class="rail-nav" id="railNav"></nav>
+    <button class="rail-reset" id="railReset">Start over from scratch</button>
+  </aside>
+
+  <div class="device-wrap">
+   <!-- Drifting dot field. Lives inside .device-wrap, not on the whole stage,
+        so it only ever appears in the area around the phone and the rail stays
+        plain. Decorative, so no text and no role. -->
+   <div class="stage-dots" aria-hidden="true"></div>
+   <div class="device-slot">
+    <div class="device" id="device">
+      <div class="notch"></div>
+      <div class="statusbar">
+        <span class="sb-time" id="sbTime">9:41</span>
+        <span class="sb-right">
+          <svg viewBox="0 0 20 12" class="sb-ico"><rect x="0" y="7" width="3" height="5" rx="1" fill="currentColor"/><rect x="4.5" y="5" width="3" height="7" rx="1" fill="currentColor"/><rect x="9" y="2.5" width="3" height="9.5" rx="1" fill="currentColor"/><rect x="13.5" y="0" width="3" height="12" rx="1" fill="currentColor"/></svg>
+          <svg viewBox="0 0 16 12" class="sb-ico"><path d="M8 10.5 1 4.2a10 10 0 0 1 14 0z" fill="currentColor"/></svg>
+          <svg viewBox="0 0 26 12" class="sb-ico"><rect x="0.6" y="0.6" width="21" height="10.8" rx="3" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".5"/><rect x="2.4" y="2.4" width="15" height="7.2" rx="1.8" fill="currentColor"/><path d="M23.4 4.2v3.6a2.2 2.2 0 0 0 0-3.6" fill="currentColor" opacity=".5"/></svg>
+        </span>
+      </div>
+
+      <main class="viewport" id="viewport">
+
+        <!-- ============ SPLASH ============ -->
+        <section class="screen screen--plain" data-screen="splash">
+          <div class="splash">
+            <div class="splash-plate"><svg class="splash-mark"><use href="#i-logo"/></svg></div>
+            <div class="splash-word">FLOW</div>
+            <div class="splash-tag">Focus without the noise.</div>
+          </div>
+        </section>
+
+        <!-- ============ ONBOARDING ============ -->
+        <section class="screen screen--plain" data-screen="onboard">
+          <div class="ob">
+            <div class="ob-top"><div class="ob-dots" id="obDots"></div><button class="ob-skip" data-ob-skip>Skip</button></div>
+            <div class="ob-body">
+              <div class="ob-step is-active" data-step="0">
+                <svg class="ob-mark"><use href="#i-logo"/></svg>
+                <h1 class="ob-h">Peak clarity,<br>every session.</h1>
+                <p class="ob-p">Plan the day, sink into deep work, then reflect on how it went. Three steps, nothing else.</p>
+              </div>
+              <div class="ob-step" data-step="1">
+                <h1 class="ob-h">What should we<br>call you?</h1>
+                <p class="ob-p">That's the only thing Flow needs. No account, no email, and everything stays on this device.</p>
+                <input id="obName" class="ob-input" type="text" placeholder="Your name" autocomplete="off" enterkeyhint="go">
+                <p class="ob-hint">Skip it if you'd rather just start.</p>
+              </div>
+            </div>
+            <div class="ob-foot">
+              <button class="btn btn--ghost" id="obBack">Back</button>
+              <button class="btn btn--primary btn--grow" id="obNext">Let's Flow <svg class="btn-ico"><use href="#i-chev-r"/></svg></button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ PLAN ============ -->
+        <section class="screen" data-screen="plan">
+          <header class="apphead">
+            <h1 class="head-title"><svg><use href="#i-chev-r"/></svg>PLAN</h1>
+            <button class="avatar" data-menu></button>
+          </header>
+          <div class="scroll">
+            <div class="stepper-row">
+              <button id="dayPrev" aria-label="Previous day"><svg><use href="#i-tri-l"/></svg></button>
+              <b id="dayLabel">Monday</b>
+              <button id="dayNext" aria-label="Next day"><svg><use href="#i-tri-r"/></svg></button>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><b>Daily Tasks</b><span id="planDate">29/12/25</span></div>
+              <ul class="tasks" id="taskList"></ul>
+              <p class="card-empty" id="taskEmpty">No tasks yet. Add one below.</p>
+              <!-- the add button sits with the field it belongs to, not across
+                   the card in a footer the eye has to travel back from -->
+              <div class="addrow">
+                <input id="taskInput" type="text" placeholder="Add a task" autocomplete="off">
+                <button class="icon-btn" id="taskAdd" aria-label="Add task"><svg><use href="#i-plus"/></svg></button>
+              </div>
+              <div class="card-foot">
+                <span class="done-count"><svg><use href="#i-check-c"/></svg><b id="planDone">0/0</b> completed</span>
+                <span id="planCarried"></span>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="cal-head">
+                <button id="calPrev" aria-label="Previous month"><svg><use href="#i-chev-l"/></svg></button>
+                <b id="calLabel">September 2021</b>
+                <button id="calNext" aria-label="Next month"><svg><use href="#i-chev-r"/></svg></button>
+              </div>
+              <div class="cal-dow"><span>SUN</span><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span></div>
+              <div class="cal-grid" id="calGrid"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ FOCUS ============ -->
+        <section class="screen" data-screen="focus">
+          <header class="apphead">
+            <h1 class="head-title"><svg><use href="#i-chev-r"/></svg>FOCUS</h1>
+            <button class="avatar" data-menu></button>
+          </header>
+          <div class="scroll">
+            <div class="dial" id="dialBox">
+              <svg viewBox="0 0 280 280" class="dial-svg">
+                <circle cx="140" cy="140" r="116" class="dial-disc"/>
+                <circle cx="140" cy="140" r="130" class="dial-track"/>
+                <circle cx="140" cy="140" r="130" class="dial-fill" id="dialFill"/>
+              </svg>
+              <div class="dial-face">
+                <div class="dial-time" id="dialTime">00:25:00</div>
+                <div class="dial-units"><span>hr</span><span>min</span><span>sec</span></div>
+              </div>
+              <button class="btn btn--primary dial-btn" id="btnStart">
+                <svg class="btn-ico" id="btnStartIco"><use href="#i-play"/></svg><span id="btnStartTxt">Start Flow</span>
+              </button>
+            </div>
+
+            <!-- This row was three unlabelled icons around the bare word
+                 "General", which tells you nothing about what any of it does.
+                 The buttons now say their own names and the pill says what the
+                 value underneath it means. -->
+            <div class="session-row">
+              <button class="round-btn" id="btnReset" aria-label="Reset this block"
+                      title="Back to the full length, nothing logged">
+                <svg><use href="#i-reset"/></svg><em>Reset</em>
+              </button>
+              <div class="pill-stepper">
+                <button id="tagPrev" aria-label="Previous label"><svg><use href="#i-tri-l"/></svg></button>
+                <span class="pill-val">
+                  <i>Working on</i>
+                  <b id="tagLabel">General</b>
+                </span>
+                <button id="tagNext" aria-label="Next label"><svg><use href="#i-tri-r"/></svg></button>
+              </div>
+              <!-- this was a plus sign, which reads as "add something" when what
+                   it does is end the block early and move to the break -->
+              <button class="round-btn" id="btnSkip" aria-label="End this block and move on"
+                      title="End the block early and start the break">
+                <svg><use href="#i-skip"/></svg><em>Skip</em>
+              </button>
+            </div>
+            <p class="session-note" id="tagNote"></p>
+
+            <div class="duo">
+              <div class="card card--duo">
+                <span>Session</span>
+                <div class="numstep"><button data-ses="-5"><svg><use href="#i-minus"/></svg></button><b id="sesVal" class="cycle" title="Tap to cycle 25 / 50 / 90">25min</b><button data-ses="5"><svg><use href="#i-plus"/></svg></button></div>
+              </div>
+              <div class="card card--duo">
+                <span>Break</span>
+                <div class="numstep"><button data-brk="-5"><svg><use href="#i-minus"/></svg></button><b id="brkVal">5min</b><button data-brk="5"><svg><use href="#i-plus"/></svg></button></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><b>Ambient Sounds</b><svg class="head-ico"><use href="#i-volume"/></svg></div>
+              <div class="sound-list" id="soundList"></div>
+              <div class="slider-row">
+                <svg><use href="#i-volume"/></svg>
+                <input type="range" id="volRange" min="0" max="100" value="45">
+                <span id="volVal">45</span>
+              </div>
+            </div>
+
+            <!-- the daily goal set on Profile had nowhere to show up, so it was
+                 a number you typed into a void; this is where it earns its keep -->
+            <div class="card card--strip">
+              <div class="strip">
+                <div><b id="fTodayMin">0m</b><span>focused today</span></div>
+                <div><b id="fTodaySes">0</b><span>sessions</span></div>
+                <div><b id="fStreak">0</b><span>day streak</span></div>
+              </div>
+              <div class="goal">
+                <div class="goal-bar"><i id="goalFill"></i></div>
+                <span id="goalTxt"></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ REFLECT ============ -->
+        <section class="screen" data-screen="reflect">
+          <header class="apphead">
+            <h1 class="head-title"><svg><use href="#i-chev-r"/></svg>REFLECT</h1>
+            <button class="avatar" data-menu></button>
+          </header>
+          <div class="scroll">
+            <button class="card card--action" data-go="rant">
+              <span class="action-ico"><svg><use href="#i-flame"/></svg></span>
+              <span class="action-txt">
+                <b>Need to get something out first?</b>
+                <small>Write the rant, then burn it. Nothing is saved.</small>
+              </span>
+              <svg class="action-arrow"><use href="#i-chev-r"/></svg>
+            </button>
+
+            <div class="card">
+              <div class="card-head"><b>How was your mood today?</b><svg class="head-ico"><use href="#i-edit"/></svg></div>
+              <div class="moodbars" id="moodBars"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><b>Notes</b><span id="reflectSaved"></span></div>
+              <textarea id="journal" rows="6" placeholder="What kept you in flow today? Saves as you type."></textarea>
+            </div>
+
+            <div class="card" id="entriesCard">
+              <div class="card-head"><b>Past entries</b></div>
+              <div class="rows" id="entries"></div>
+              <p class="card-empty" id="entriesEmpty">No entries yet.</p>
+              <button class="btn btn--ghost btn--block btn--sm" id="entriesMore" hidden>Show more</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ RANT ============ -->
+        <section class="screen" data-screen="rant">
+          <header class="apphead">
+            <button class="head-title head-title--back" data-back><svg><use href="#i-chev-r"/></svg><span>Rant</span></button>
+            <button class="avatar" data-menu></button>
+          </header>
+          <div class="rant">
+            <p class="rant-hint" id="rantHint">Say anything. Nothing here is saved. Burn it when you're done.</p>
+            <textarea id="rantText" class="rant-text" placeholder="Get it out&hellip;" spellcheck="false"></textarea>
+            <canvas id="rantCanvas" class="rant-canvas" aria-hidden="true"></canvas>
+            <div class="rant-gone" id="rantGone" hidden>Gone.</div>
+            <div class="rant-bar">
+              <button class="rant-mic" id="rantMic" aria-label="Dictate">
+                <svg><use href="#i-mic"/></svg><span id="rantMicLabel">Speak</span>
+              </button>
+              <span class="rant-count" id="rantCount"></span>
+              <button class="rant-burn" id="rantBurn" aria-label="Burn this">
+                <svg><use href="#i-flame"/></svg><span>Burn</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ STATS ============ -->
+        <section class="screen" data-screen="stats">
+          <header class="apphead">
+            <h1 class="head-title"><svg><use href="#i-chev-r"/></svg>STATS</h1>
+            <button class="avatar" data-menu></button>
+          </header>
+          <div class="scroll">
+            <!-- one range switch for the whole screen. It used to sit inside the
+                 chart card while silently driving the mood split two cards
+                 above it, so numbers moved for no visible reason. -->
+            <div class="range-row">
+              <span id="rangeCaption">Last 7 days</span>
+              <div class="seg seg--sm" id="rangeSeg">
+                <button data-range="week" class="is-active">W</button>
+                <button data-range="month">M</button>
+                <button data-range="year">Y</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-sec">
+                <!-- always the last seven days, whatever the range above says:
+                     a streak is a run of days, not a window you pick -->
+                <div class="sec-title">Daily streak</div>
+                <div class="streak-dots" id="streakDots"></div>
+                <div class="sec-note" id="streakNote">Keep going</div>
+              </div>
+              <!-- Focused time is the one number this screen exists to report, so
+                   it is no longer one of four equal tiles. -->
+              <div class="hero-stat">
+                <span>Focused</span><b id="stTotal">0m</b><i id="stTotalTrend">all time</i>
+              </div>
+              <div class="quad quad--3 quad--plain">
+                <div><span>Avg session</span><b id="stAvg">0m</b><i id="stAvgNote">per session</i></div>
+                <div><span>Tasks done</span><b id="stTasks">0</b><i id="stTasksNote">this week</i></div>
+                <div><span>Sessions</span><b id="stSessions">0</b><i id="stSesNote">this week</i></div>
+              </div>
+              <div class="card-sec">
+                <div class="sec-title">How the days felt</div>
+                <div class="moodsplit" id="moodSplit"></div>
+                <div class="sec-note" id="moodNote"></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><b id="focusRangeLabel">Focus this week</b></div>
+              <!-- the year view buckets by MONTH, so these cannot say "day" -->
+              <div id="focusSpread">
+                <div class="kv"><span id="stHighLbl">Best day</span><b id="stHigh">0m</b></div>
+                <div class="kv"><span id="stMeanLbl">Average day</span><b id="stMean">0m</b></div>
+                <div class="kv"><span id="stLowLbl">Quietest day</span><b id="stLow">0m</b></div>
+              </div>
+              <p class="card-empty" id="focusThin" hidden></p>
+              <div class="chart" id="chart"></div>
+              <div class="chart-x" id="chartX"></div>
+              <p class="chart-hint">Tap a bar to open that day</p>
+            </div>
+
+            <div class="card">
+              <div class="card-head"><b>Best time of day</b><span id="todBest">no data yet</span></div>
+              <div class="tod" id="tod"></div>
+            </div>
+
+            <!-- A "Where it went" breakdown by label used to sit here. It was
+                 cut on purpose: people label the same work differently from one
+                 day to the next, so the split measured naming habits more than
+                 it measured time, and a chart you cannot trust is worse than no
+                 chart. Taking your data with you is the useful thing to offer. -->
+            <button class="btn btn--primary btn--block" id="stExport">
+              <svg class="btn-ico"><use href="#i-download"/></svg>Download your data
+            </button>
+            <p class="chart-hint">A readable JSON file. Yours to keep, restore or move.</p>
+          </div>
+        </section>
+
+        <!-- ============ DAY DETAIL ============ -->
+        <section class="screen" data-screen="day">
+          <header class="apphead">
+            <button class="head-title head-title--back" data-back><svg><use href="#i-chev-r"/></svg><span id="dayTitle">Go Back</span></button>
+            <button class="avatar" data-menu></button>
+          </header>
+          <div class="scroll">
+            <div class="card">
+              <div class="card-head"><b id="dayHeading">Day</b><span id="dayMood">not logged</span></div>
+              <div class="quad quad--2">
+                <div><span>Focused</span><b id="dayTotal">0m</b></div>
+                <div><span>Sessions</span><b id="daySessions">0</b></div>
+              </div>
+            </div>
+            <!-- a day is what you meant to do as well as what you did, so the
+                 list shows both, ticked and untouched -->
+            <div class="card" id="dayTaskCard">
+              <div class="card-head"><b>Tasks</b><span id="dayTaskCount"></span></div>
+              <ul class="tasks" id="dayTasks"></ul>
+            </div>
+            <div class="card">
+              <div class="card-head"><b>Session log</b></div>
+              <div class="log" id="dayLog"></div>
+              <p class="card-empty" id="dayEmpty">Nothing logged on this day.</p>
+            </div>
+            <div class="card" id="dayNoteCard">
+              <div class="card-head"><b>Reflection</b></div>
+              <p class="card-p" id="dayNote"></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ PROFILE ============ -->
+        <section class="screen" data-screen="profile">
+          <header class="apphead">
+            <button class="head-title head-title--back" data-back><svg><use href="#i-chev-r"/></svg><span>Go Back</span></button>
+            <button class="avatar" data-menu></button>
+          </header>
+          <div class="scroll">
+            <!-- This was a grey silhouette floating half-off a card, which is
+                 the shape of a photo upload Flow does not have. It now shows
+                 the one identity that actually exists here: your initial, your
+                 name, and how long you have been at it. -->
+            <div class="card card--hero">
+              <button class="prof-mark" id="profMark" aria-label="Change your picture"
+                      title="Choose a picture"><svg class="prof-person"><use href="#i-avatar"/></svg><i class="prof-cam"><svg><use href="#i-edit"/></svg></i></button>
+              <input type="file" id="profFile" accept="image/*" hidden>
+              <div class="prof-id">
+                <b id="profHello">Friend</b>
+                <span id="profSince"></span>
+                <button class="prof-clear" id="profClear" hidden>Remove picture</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="prof-stats">
+                <div><b id="profFocus">0h</b><span>focused</span></div>
+                <div><b id="profStreak">0</b><span>day streak</span></div>
+                <div><b id="profDone">0</b><span>tasks done</span></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <!-- no Save button: two fields that save themselves do not need
+                   one, and a button you must remember to press is a way to
+                   lose work rather than a way to keep it -->
+              <div class="card-head"><b>Your details</b><span id="profSaved"></span></div>
+              <label class="fld"><span>Name</span><input id="pName" type="text" placeholder="Your name"></label>
+              <label class="fld"><span>Daily focus goal</span>
+                <div class="numstep numstep--wide"><button data-goal="-15"><svg><use href="#i-minus"/></svg></button><b id="pGoalVal">120 min</b><button data-goal="15"><svg><use href="#i-plus"/></svg></button></div>
+              </label>
+              <p class="card-fine card-fine--left" id="profGoalNote"></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ SETTINGS ============ -->
+        <section class="screen" data-screen="settings">
+          <header class="apphead">
+            <button class="head-title head-title--back" data-back><svg><use href="#i-chev-r"/></svg><span>Go Back</span></button>
+            <button class="avatar" data-menu></button>
+          </header>
+          <div class="scroll">
+            <div class="card">
+              <div class="card-brand"><b>Settings and Privacy</b><span class="brandmark"><svg><use href="#i-logo"/></svg><em>FLOW</em></span></div>
+              <div class="rows">
+                <div class="row row--split"><span>Appearance</span>
+                  <div class="seg" id="themeSeg"><button data-theme="dark" class="is-active">Dark</button><button data-theme="light">Light</button></div>
+                </div>
+                <div class="row row--split"><span>Accent</span>
+                  <div class="swatches" id="accentRow">
+                    <button data-accent="#C74A00" class="is-active" style="--s:#C74A00"></button>
+                    <button data-accent="#1156D9" style="--s:#1156D9"></button>
+                    <button data-accent="#0F7A57" style="--s:#0F7A57"></button>
+                    <button data-accent="#6D3BD4" style="--s:#6D3BD4"></button>
+                  </div>
+                </div>
+                <!-- one label per thing that actually happens; "Sounds &
+                     Notifications" was two features wearing one name -->
+                <div class="row row--split"><span>Chime when a block ends</span><button class="toggle is-on" data-setting="alerts"></button></div>
+                <div class="row row--split"><span>Desktop notifications</span><button class="toggle" data-setting="notify"></button></div>
+                <div class="row row--split"><span>Start breaks automatically</span><button class="toggle" data-setting="autoBreak"></button></div>
+                <div class="row row--split"><span>Keep ambient sound in breaks</span><button class="toggle is-on" data-setting="soundBreak"></button></div>
+                <div class="row row--split"><span>Where your data lives</span><b>This device only</b></div>
+                <button class="row" data-go="backup"><span>Downloads and backup</span><b>Export</b></button>
+                <button class="row" data-go="help"><span>Help</span></button>
+                <button class="row" data-go="about"><span>About Flow</span></button>
+              </div>
+              <p class="card-fine">No ads, no trackers, no accounts. Say hello at <a href="mailto:joinflow@gmail.com">joinflow@gmail.com</a></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ HELP ============ -->
+        <section class="screen" data-screen="help">
+          <header class="apphead">
+            <button class="head-title head-title--back" data-back><svg><use href="#i-chev-r"/></svg><span>Go Back</span></button>
+            <button class="avatar" data-menu></button>
+          </header>
+          <div class="scroll">
+            <div class="card">
+              <div class="card-brand"><b>Help</b><span class="brandmark"><svg><use href="#i-logo"/></svg><em>FLOW</em></span></div>
+              <!-- the answer opens under the question it belongs to. It used to
+                   render in one box below the whole list, so tapping the first
+                   question put the answer ten rows off the bottom of the screen -->
+              <div class="rows" id="faqRows"></div>
+              <!-- this used to be a GitHub button that only raised a toast saying
+                   the repo was not public yet. Mail works today. -->
+              <p class="card-fine">Still stuck? A real person reads these.</p>
+              <a class="btn btn--primary btn--block" id="btnFeedback"
+                 href="mailto:joinflow@gmail.com?subject=Flow%20feedback"><svg class="btn-ico"><use href="#i-mail"/></svg>Send feedback</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ BACKUP ============ -->
+        <section class="screen" data-screen="backup">
+          <header class="apphead">
+            <button class="head-title head-title--back" data-back><svg><use href="#i-chev-r"/></svg><span>Go Back</span></button>
+            <button class="avatar" data-menu></button>
+          </header>
+          <div class="scroll">
+            <div class="card">
+              <div class="card-brand"><b>Downloads and Backup</b><span class="brandmark"><svg><use href="#i-logo"/></svg><em>FLOW</em></span></div>
+              <!-- the Auto Backup toggle used to live here and did nothing at
+                   all; a switch that flips and changes no behaviour is worse
+                   than no switch -->
+              <div class="rows">
+                <div class="row row--split"><span>Storage</span><b id="bkSize">0 KB</b></div>
+                <div class="row row--split"><span>Tasks</span><b id="bkTasks">0</b></div>
+                <div class="row row--split"><span>Focus sessions</span><b id="bkSessions">0</b></div>
+                <div class="row row--split"><span>Reflections</span><b id="bkEntries">0</b></div>
+                <!-- an "Export Flow Data (JSON)" row used to sit here doing
+                     exactly what the button at the bottom does -->
+                <button class="row" id="bkImport"><span>Restore from a file</span><b>Import</b></button>
+                <button class="row row--danger" id="bkWipe"><span>Clear all data</span></button>
+              </div>
+              <input type="file" id="bkFile" accept="application/json" hidden>
+              <p class="card-fine" id="bkWhen">Last backup: just now</p>
+              <button class="btn btn--primary btn--block" id="bkExport2"><svg class="btn-ico"><use href="#i-download"/></svg>Export Flow Data</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ ABOUT ============ -->
+        <section class="screen" data-screen="about">
+          <header class="apphead">
+            <button class="head-title head-title--back" data-back><svg><use href="#i-chev-r"/></svg><span>Go Back</span></button>
+            <button class="avatar" data-menu></button>
+          </header>
+          <div class="scroll">
+            <div class="card">
+              <!-- "open source" came off the version line until there is a repo
+                   behind the claim -->
+              <div class="about-top"><svg class="about-mark"><use href="#i-logo"/></svg><b>FLOW</b><span>Version 2.0</span></div>
+              <p class="card-p">Peace lives in the mountains for me. That flowing peak clarity where nothing distracts.</p>
+              <p class="card-p">Productivity apps promised focus and delivered ads, clutter and overload, shattering that calm every time.</p>
+              <p class="card-p">So I built Flow: plan the day, sink into deep work, reflect on how it went. No ads, no account, no server. Your data sits in your browser, and you can take a copy of it whenever you like.</p>
+              <div class="quad quad--3">
+                <div><b>0</b><span>ads, ever</span></div>
+                <div><b>0</b><span>trackers</span></div>
+                <div><b>100%</b><span>your data</span></div>
+              </div>
+              <p class="card-fine">Designed and built by Arihant.</p>
+              <a class="btn btn--primary btn--block" id="btnSource"
+                 href="mailto:joinflow@gmail.com?subject=Flow"><svg class="btn-ico"><use href="#i-mail"/></svg>Get in touch</a>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- ============ AVATAR MENU ============ -->
+      <div class="menu-scrim" id="menuScrim" hidden>
+        <nav class="menu-sheet" id="menuSheet">
+          <button class="menu-back" id="menuClose"><svg><use href="#i-chev-l"/></svg></button>
+          <div class="menu-theme">
+            <span>Appearance</span>
+            <div class="seg seg--sm" id="menuThemeSeg">
+              <button data-theme="dark" class="is-active">Dark</button>
+              <button data-theme="light">Light</button>
+            </div>
+          </div>
+          <!-- these read the same as the rows on Settings now: it said
+               "About Us" here and "About Flow" two taps away -->
+          <button data-go="profile">Profile</button>
+          <button data-go="settings">Settings and privacy</button>
+          <button data-go="help">Help</button>
+          <button data-go="backup">Downloads and backup</button>
+          <button data-go="about">About Flow</button>
+        </nav>
+      </div>
+
+      <nav class="tabbar">
+        <div class="tabpill">
+          <button class="tab is-active" data-go="plan"><svg><use href="#i-plan"/></svg>Plan</button>
+          <button class="tab" data-go="focus"><svg><use href="#i-clock"/></svg>Focus</button>
+          <button class="tab" data-go="reflect"><svg><use href="#i-moon"/></svg>Reflect</button>
+          <button class="tab" data-go="stats"><svg><use href="#i-chart"/></svg>Stats</button>
+        </div>
+      </nav>
+
+      <!-- confirmation dialog replaces window.confirm, which a phone frame
+           cannot style and which reads as a browser artefact -->
+      <div class="dlg-scrim" id="dlgScrim" hidden>
+        <div class="dlg" role="alertdialog" aria-modal="true" aria-labelledby="dlgTitle">
+          <h3 id="dlgTitle">Are you sure?</h3>
+          <p id="dlgBody"></p>
+          <div class="dlg-actions">
+            <button class="btn btn--ghost" id="dlgCancel">Cancel</button>
+            <button class="btn btn--danger" id="dlgOk">Confirm</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- picking what a block is for: the full list, since cycling eight
+           things with an arrow is a chore -->
+      <div class="pick-scrim" id="pickScrim" hidden>
+        <div class="pick-sheet" role="dialog" aria-modal="true" aria-labelledby="pickTitle">
+          <div class="pick-head">
+            <b id="pickTitle">What is this block for?</b>
+            <button class="icon-btn" id="pickClose" aria-label="Close"><svg><use href="#i-close"/></svg></button>
+          </div>
+          <div class="pick-list" id="pickList"></div>
+          <button class="btn btn--ghost btn--block" id="pickAdd">
+            <svg class="btn-ico"><use href="#i-plus"/></svg>Add your own
+          </button>
+        </div>
+      </div>
+
+      <div class="dlg-scrim" id="actScrim" hidden>
+        <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="actTitle">
+          <h3 id="actTitle">New activity</h3>
+          <p>Give it a name and how long it usually takes. Picking it later sets the timer for you.</p>
+          <label class="fld"><span>Name</span>
+            <input id="actName" type="text" placeholder="Guitar practice" autocomplete="off" maxlength="32">
+          </label>
+          <label class="fld"><span>Minutes</span>
+            <div class="numstep numstep--wide">
+              <button data-act="-5" aria-label="Less"><svg><use href="#i-minus"/></svg></button>
+              <b id="actMins">20 min</b>
+              <button data-act="5" aria-label="More"><svg><use href="#i-plus"/></svg></button>
+            </div>
+          </label>
+          <div class="dlg-actions">
+            <button class="btn btn--ghost" id="actCancel">Cancel</button>
+            <button class="btn btn--primary" id="actOk">Add it</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast" id="toast"></div>
+    </div>
+   </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

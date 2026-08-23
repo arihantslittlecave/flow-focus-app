@@ -1,0 +1,38 @@
+# Editor tooling. Not part of the project.
+.vscode/
+.idea/
+*.code-workspace
+
+# Notes to myself while recording the demo, not project files.
+showcase-rant.txt
+
+# Scratch output from the build scripts. Each one writes a temp page next to
+# its output and deletes it again; these are here in case a run dies partway.
+tools/_*.html
+portfolio/_*.html
+portfolio/case/_*.html
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Kept on disk, not in the repo. Superseded boards, rejected concepts and the
+# old build scripts are 17 MB that nothing references and nobody needs to clone.
+# archive/old-design stays, because build_case.py draws the old-vs-new slide
+# from it.
+archive/plain-frames/
+archive/rejected-concepts/
+archive/superseded-boards/
+archive/superseded-tools/
+archive/styles-neumorphic.css
+
+# Parked until the demo video exists.
+portfolio/for-the-demo/
+banner/ORANGE-B-header.png

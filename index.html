@@ -77,12 +77,10 @@
   --secondary-fg:#EDEFF5;
   --accent-2:#4C7DFF;
   /* There is no red. The palette is five colours and a sixth one for danger
-     was never among them, so the weight of a destructive action is carried by
-     the near black instead: it is the only fill here that reads as committed
-     without reading as the recommended thing to do, which is what orange
-     means everywhere else. The warning lives in the words. */
+     was never among them, so a destructive action wears the accent like any
+     other committed action and the warning lives in the words. */
   --destructive:var(--muted-fg);   /* ink */
-  --destructive-fill:#0B0B0D;      /* white on this is 18.6:1 */
+  --destructive-fill:var(--primary);
   --success:#4FB783;
 
   /* Light tint plus a backdrop blur, so the app reads as pushed back rather
@@ -119,7 +117,7 @@
   --input:#E7EAF0;
   --primary-ink:#B04200;
   --destructive:var(--muted-fg);
-  --destructive-fill:#0B0B0D;      /* white on this is 17.4:1 */
+  --destructive-fill:var(--primary);
   --scrim:rgba(46,52,68,.26);
   --sheet-edge:rgba(255,255,255,.7);
   --secondary:#E7EAF0;

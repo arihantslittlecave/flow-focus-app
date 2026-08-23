@@ -464,14 +464,28 @@ function renderOb() {
      width and pushed Continue 71px right of every other element */
   $('#obBack').hidden = obStep === 0;
   $('#obNext').firstChild.textContent = obStep === OB_LAST ? 'Start flowing ' : 'Continue ';
-  $('.ob-skip').textContent = obStep === OB_LAST ? 'Skip' : 'Skip';
+  syncObNext();
+}
+/* The name step asks a question, so its button should not be answerable while
+   the answer is empty. It used to go through and quietly name you Friend,
+   which reads as the field having been ignored rather than skipped. Skip is
+   in the corner for anyone who would rather not say. */
+function syncObNext() {
+  $('#obNext').disabled = obStep === OB_LAST && !$('#obName').value.trim();
 }
 function initOb() {
   $('#obDots').innerHTML = '<i></i><i></i>';
   $('#obName').value = S.profile.name === 'Friend' ? '' : S.profile.name;
 
   const commitName = () => { S.profile.name = $('#obName').value.trim() || 'Friend'; };
-  $('#obName').addEventListener('keydown', e => { if (e.key === 'Enter') { commitName(); finishOb(); } });
+  $('#obName').addEventListener('input', syncObNext);
+  $('#obName').addEventListener('keydown', e => {
+    /* enterkeyhint is "go", so the phone keyboard offers it. It has to refuse
+       for the same reason the button does. */
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    if ($('#obName').value.trim()) { commitName(); finishOb(); }
+  });
 
   $('#obNext').onclick = () => {
     if (obStep === OB_LAST) { commitName(); return finishOb(); }

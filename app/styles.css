@@ -1210,3 +1210,8 @@ body.capture .device::after{display:none}
 @media (hover:none){
   .task-grip,.task-del{color:var(--subtle)}
 }
+
+/* A primary button that cannot be pressed has to look like it. Not so faint it
+   reads as missing: it is the thing you are meant to reach for once you have
+   answered, so it stays legible and stops responding to touch. */
+.btn:disabled{opacity:.4;cursor:default;box-shadow:none;pointer-events:none}

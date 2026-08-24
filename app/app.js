@@ -1929,9 +1929,10 @@ function init() {
     S.settings[k] = !S.settings[k];
     save(); renderSettings();
   });
-  /* Feedback and Get in touch are plain mailto links now. They used to be
-     buttons that raised a toast explaining the repo was not public yet, which
-     is a button that does nothing wearing an apology. */
+  /* Report a problem and See the source are plain links to the repo. They have
+     no handler here on purpose: they used to be buttons that raised a toast
+     explaining the repo was not public yet, which is a button that does nothing
+     wearing an apology. */
 
   // BACKUP
   $('#bkExport2').onclick = exportData;

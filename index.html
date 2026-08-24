@@ -430,8 +430,9 @@ body.no-rail .rail-show{display:grid}
 .row--split:hover{background:transparent}
 
 /* ============ BUTTONS ============ */
-/* text-decoration and colour are stated because two of these are <a>: a mailto
-   that really opens mail beats a <button> that only apologises for not working */
+/* text-decoration and colour are stated because two of these are <a>: a link
+   that really goes somewhere beats a <button> that only apologises for not
+   working. Both open the repo in a new tab. */
 .btn{
   height:40px;padding:0 16px;border-radius:var(--radius-sm);
   font-size:13.5px;font-weight:500;display:inline-flex;align-items:center;
@@ -3851,9 +3852,10 @@ function init() {
     S.settings[k] = !S.settings[k];
     save(); renderSettings();
   });
-  /* Feedback and Get in touch are plain mailto links now. They used to be
-     buttons that raised a toast explaining the repo was not public yet, which
-     is a button that does nothing wearing an apology. */
+  /* Report a problem and See the source are plain links to the repo. They have
+     no handler here on purpose: they used to be buttons that raised a toast
+     explaining the repo was not public yet, which is a button that does nothing
+     wearing an apology. */
 
   // BACKUP
   $('#bkExport2').onclick = exportData;

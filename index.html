@@ -1297,7 +1297,7 @@ body.capture .device::after{display:none}
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.5A8.2 8.2 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
-  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2.8" y="5" width="18.4" height="14" rx="2.6" stroke="currentColor" stroke-width="1.8"/><path d="m3.6 7.2 7.3 5.2a2 2 0 0 0 2.2 0l7.3-5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 4 11 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M18 14.5V18a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
   <symbol id="i-logo" viewBox="-0.66 0.66 101.32 98.68">
     <path fill="currentColor" fill-rule="evenodd" d="M49.75 0.66L58.06 1.25L62.13 2.08L68.11 4.07L73.26 6.48L76.99 8.72L80.9 11.54L85.13 15.28L91.2 22.34L94.6 27.66L96.76 32.06L98.59 36.96L99.67 41.11L100.5 46.68L100.66 50.5L99.83 59.39L98.59 64.29L96.93 68.69L94.77 73.01L91.86 77.57L88.87 81.31L84.97 85.38L81.15 88.62L76.99 91.53L69.1 95.6L64.7 97.18L60.05 98.34L51.16 99.34L46.93 99.25L42.03 98.67L37.54 97.76L32.64 96.26L24.58 92.52L19.27 89.04L16.28 86.63L12.96 83.47L9.39 79.4L6.48 75.33L4.32 71.59L2.49 67.61L0.83 62.62L-0.17 57.97L-0.66 53.07L-0.66 48.92L-0.17 43.77L0.91 38.54L2.49 33.72L3.9 30.4L6.73 25.25L9.63 21.1L12.87 17.36L17.28 13.21L21.35 10.13L30.15 5.15L39.29 1.99L44.27 1.08L49.75 0.66ZM49.58 6.23L53.99 6.31L59.8 7.14L65.28 8.72L69.1 10.3L73.84 12.87L79.32 16.86L83.8 21.18L86.71 24.75L89.78 29.49L92.11 34.22L93.6 38.46L94.85 43.77L95.35 48.42L95.27 54.4L94.35 60.22L93.02 64.45L75.17 51.66L64.87 59.39L38.04 37.87L6.31 62.13L5.4 58.31L4.9 53.74L4.98 47.59L5.73 42.52L7.56 36.05L9.22 32.14L11.79 27.49L14.53 23.67L16.78 21.1L21.68 16.53L25.08 14.04L30.32 11.05L34.55 9.22L38.95 7.81L44.19 6.73L49.58 6.23Z"/>
     <circle cx="68.1" cy="33.7" r="10.8" fill="#FF6600"/>
@@ -1746,7 +1746,7 @@ body.capture .device::after{display:none}
                 <button class="row" data-go="help"><span>Help</span></button>
                 <button class="row" data-go="about"><span>About Flow</span></button>
               </div>
-              <p class="card-fine">No ads, no trackers, no accounts. Say hello at <a href="mailto:joinflow@gmail.com">joinflow@gmail.com</a></p>
+              <p class="card-fine">No ads, no trackers, no accounts.</p>
             </div>
           </div>
         </section>
@@ -1764,11 +1764,14 @@ body.capture .device::after{display:none}
                    render in one box below the whole list, so tapping the first
                    question put the answer ten rows off the bottom of the screen -->
               <div class="rows" id="faqRows"></div>
-              <!-- this used to be a GitHub button that only raised a toast saying
-                   the repo was not public yet. Mail works today. -->
-              <p class="card-fine">Still stuck? A real person reads these.</p>
+              <!-- this was a GitHub button that only raised a toast saying the repo
+                   was not public yet, then a mailto once it was. The repo is public
+                   now, so it goes where it always meant to. New tab: the app holds
+                   its state in this one and navigating away would drop it. -->
+              <p class="card-fine">Still stuck? Open an issue and I will read it.</p>
               <a class="btn btn--primary btn--block" id="btnFeedback"
-                 href="mailto:joinflow@gmail.com?subject=Flow%20feedback"><svg class="btn-ico"><use href="#i-mail"/></svg>Send feedback</a>
+                 target="_blank" rel="noopener"
+                 href="https://github.com/arihantslittlecave/flow-focus-app/issues/new"><svg class="btn-ico"><use href="#i-ext"/></svg>Report a problem</a>
             </div>
           </div>
         </section>
@@ -1823,7 +1826,8 @@ body.capture .device::after{display:none}
               </div>
               <p class="card-fine">Designed and built by Arihant.</p>
               <a class="btn btn--primary btn--block" id="btnSource"
-                 href="mailto:joinflow@gmail.com?subject=Flow"><svg class="btn-ico"><use href="#i-mail"/></svg>Get in touch</a>
+                 target="_blank" rel="noopener"
+                 href="https://github.com/arihantslittlecave/flow-focus-app"><svg class="btn-ico"><use href="#i-ext"/></svg>See the source</a>
             </div>
           </div>
         </section>

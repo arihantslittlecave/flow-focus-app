@@ -2208,6 +2208,7 @@ const NAV = [
 let current = 'plan';
 const stack = [];
 let splashTimer = null;
+let introFromTheTop = false;   // the URL asked for the whole intro, not just the logo
 
 function go(name, push) {
   $$('#viewport > svg[style]').forEach(el => el.remove());
@@ -2232,6 +2233,20 @@ function go(name, push) {
 }
 function back() { go(stack.pop() || 'plan', false); }
 
+/* Entering a screen from a route, as opposed to moving around inside the app.
+   Splash is the only screen that needs the difference: it has to schedule its
+   own hand-off or the logo sits there forever, which the boot path used to do
+   and every other route into it did not. go() deliberately stays dumb about
+   this, because the screenshot exporter drives go() directly and needs the
+   splash to hold still. */
+function routeTo(name) {
+  introFromTheTop = name === 'splash';
+  go(name, false);
+  if (name !== 'splash') return;
+  clearTimeout(splashTimer);
+  splashTimer = setTimeout(() => { splashTimer = null; morphSplashToOnboard(); }, 2000);
+}
+
 /* Splash hands off to onboarding by flying the same mark into its new place.
 
    Two traps here, both of which showed up as the logo jumping on arrival:
@@ -2243,7 +2258,11 @@ function back() { go(stack.pop() || 'plan', false); }
    undefined on an <svg>. */
 function morphSplashToOnboard() {
   const from = $('.splash-mark'), vp = $('#viewport');
-  const done = () => go(S.onboarded ? 'plan' : 'onboard', false);
+  /* Asking for #splash means asking to see this from the beginning, so the
+     hand-off ignores whether this browser has been here before. Without it a
+     returning visitor got the logo and then landed straight on Plan, which is
+     the app being helpful at the exact moment someone wanted the tour. */
+  const done = () => go(introFromTheTop || !S.onboarded ? 'onboard' : 'plan', false);
   if (!from || matchMedia('(prefers-reduced-motion: reduce)').matches) return done();
 
   const fit = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fit')) || 1;
@@ -2330,7 +2349,7 @@ function buildRail() {
          and pointing it at today landed on an empty screen every time, since
          today is meant to start blank. Open the most recent day that actually
          has something on it instead. */
-      b.onclick = () => (id === 'day' ? openDay(lastActiveDay()) : go(id, false));
+      b.onclick = () => (id === 'day' ? openDay(lastActiveDay()) : routeTo(id));
       nav.appendChild(b);
     });
   });
@@ -3861,13 +3880,7 @@ function init() {
      the logo screen becomes a dead end. */
   const hash = location.hash.slice(1);
   const start = (hash && $(`[data-screen="${hash}"]`)) ? hash : (S.onboarded ? 'plan' : 'splash');
-  go(start, false);
-  if (start === 'splash') {
-    splashTimer = setTimeout(() => {
-      splashTimer = null;
-      morphSplashToOnboard();
-    }, 2000);
-  }
+  routeTo(start);
 }
 
 /* Small control surface, used by the screenshot exporter and for debugging. */
@@ -3885,7 +3898,7 @@ window.Flow = {
 document.addEventListener('DOMContentLoaded', init);
 window.addEventListener('hashchange', () => {
   const h = location.hash.slice(1);
-  if (h && h !== current && $(`[data-screen="${h}"]`)) go(h, false);
+  if (h && h !== current && $(`[data-screen="${h}"]`)) routeTo(h);
 });
 
 })();

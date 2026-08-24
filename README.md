@@ -5,7 +5,7 @@
 A focus app that runs in the browser. Plan the day, run the timer, reflect on how
 it went.
 
-### [Open the live demo](https://arihantslittlecave.github.io/flow-focus-app/#onboard)
+### [Open the live demo](https://arihantslittlecave.github.io/flow-focus-app/#splash)
 
 That link is the project. It opens on a phone or a laptop, needs nothing
 installed, and works straight away.
@@ -24,7 +24,7 @@ study comparing them is on Behance.
 It is plain HTML, CSS and JavaScript. No framework, no dependencies, and once the
 page has loaded it makes no network requests at all. The whole app is one file.
 
-Every screen and control is covered by an automated suite of 219 checks driven by
+Every screen and control is covered by an automated suite of 222 checks driven by
 real mouse events, plus a second suite that drives the app with real touch events
 at four phone and tablet sizes, in both themes.
 
